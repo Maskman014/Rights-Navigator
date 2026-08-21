@@ -14,7 +14,7 @@ Rights Navigator is an educational and navigational instrument designed to help 
 
 1. **Install Dependencies:**
    ```bash
-   npm install
+   npm install --legacy-peer-deps
    ```
 2. **Start the Development Server:**
    ```bash
