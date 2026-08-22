@@ -23,8 +23,10 @@ const DB_FILE = path.join(process.cwd(), 'src', 'data', 'savedCases.json');
 function loadCases(): SavedCase[] {
   try {
     if (fs.existsSync(DB_FILE)) {
-      const data = fs.readFileSync(DB_FILE, 'utf-8');
-      return JSON.parse(data);
+      const data = fs.readFileSync(DB_FILE, 'utf-8').trim();
+      if (!data) return [];
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
     }
   } catch (e) {
     console.error('Error reading cases DB:', e);
