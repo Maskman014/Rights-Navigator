@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Compass, ShieldCheck, Scale, FolderArchive } from "lucide-react";
+import { ShieldCheck, Scale, FolderArchive } from "lucide-react";
 import { Badge } from "./ui";
 import ArchitectureModal from "./ArchitectureModal";
 
@@ -19,14 +19,14 @@ export default function Header({ onOpenVault, vaultCount = 0 }: HeaderProps) {
 
   return (
     <>
-      <header className="relative border-b border-indigo-950/40 bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white shadow-xl">
+      <header className="relative border-b border-emerald-950/40 bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950 text-white shadow-xl">
         {/* Ambient background lighting */}
-        <div className="pointer-events-none absolute -left-10 top-0 h-40 w-40 rounded-full bg-indigo-500/15 blur-3xl" />
-        <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-blue-500/15 blur-3xl" />
+        <div className="pointer-events-none absolute -left-10 top-0 h-40 w-40 rounded-full bg-emerald-500/15 blur-3xl" />
+        <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-teal-500/15 blur-3xl" />
 
         <div className="relative mx-auto flex max-w-5xl flex-col gap-4 px-4 py-4.5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3.5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-500 shadow-md shadow-indigo-500/30 ring-2 ring-white/20">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-400 shadow-md shadow-emerald-500/30 ring-2 ring-white/20">
               <Scale className="h-5.5 w-5.5 text-white" />
             </div>
             <div>
@@ -34,7 +34,7 @@ export default function Header({ onOpenVault, vaultCount = 0 }: HeaderProps) {
                 <h1 className="text-xl font-black tracking-tight text-white sm:text-2xl">
                   Rights Navigator
                 </h1>
-                <span className="rounded-md bg-indigo-500/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-indigo-300 uppercase ring-1 ring-inset ring-indigo-400/30">
+                <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-emerald-300 uppercase ring-1 ring-inset ring-emerald-400/30">
                   India Law Edition
                 </span>
               </div>
@@ -48,12 +48,12 @@ export default function Header({ onOpenVault, vaultCount = 0 }: HeaderProps) {
             {onOpenVault && (
               <button
                 onClick={onOpenVault}
-                className="inline-flex items-center gap-2 rounded-xl border border-indigo-400/30 bg-indigo-600/30 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-all hover:bg-indigo-600/50 hover:border-indigo-400/50 active:scale-95 shadow-sm"
+                className="inline-flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-600/30 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-all hover:bg-emerald-600/50 hover:border-emerald-400/50 active:scale-95 shadow-sm"
               >
-                <FolderArchive className="h-4 w-4 text-indigo-300" />
+                <FolderArchive className="h-4 w-4 text-emerald-300" />
                 <span>Case Vault</span>
                 {vaultCount > 0 && (
-                  <span className="rounded-full bg-indigo-500 px-1.5 py-0.2 text-[10px] font-bold text-white">
+                  <span className="rounded-full bg-emerald-500 px-1.5 py-0.2 text-[10px] font-bold text-white">
                     {vaultCount}
                   </span>
                 )}
