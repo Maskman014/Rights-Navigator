@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowLeft, ArrowRight, ListChecks, AlertCircle } from "lucide-react";
 import type { FormState } from "../types";
 import { DOMAIN_FACTS } from "../mockData";
-import { Card, SectionTitle, Button, Badge } from "./ui";
+import { Card, Button, Badge } from "./ui";
 
 interface Step2Props {
   form: FormState;
@@ -23,12 +23,27 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
       transition={{ duration: 0.3 }}
       className="mx-auto max-w-3xl"
     >
-      <SectionTitle
-        step={2}
-        title="Fact-Finding Context Builder"
-        subtitle="Confirm key evidentiary facts that establish statutory locus standi and substantive rights."
-        badgeText="Step 2 of 5"
-      />
+      {/* Step Title Header (Converted to Emerald) */}
+      <div className="mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-600 text-xs font-bold text-white shadow-md shadow-emerald-600/20">
+              2
+            </div>
+            <h2 className="text-xl font-extrabold text-slate-900 tracking-tight sm:text-2xl">
+              Fact-Finding Context Builder
+            </h2>
+          </div>
+
+          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 border border-emerald-200/80">
+            Step 2 of 5
+          </span>
+        </div>
+
+        <p className="mt-2 text-xs text-slate-500 sm:text-sm leading-relaxed">
+          Confirm key evidentiary facts that establish statutory locus standi and substantive rights.
+        </p>
+      </div>
 
       {form.domain ? (
         <>
