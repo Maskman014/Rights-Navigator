@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowLeft, ArrowRight, ListChecks, AlertCircle, Sparkles, CheckCircle2 } from "lucide-react";
+import { Check, ArrowLeft, ArrowRight, ListChecks, AlertCircle } from "lucide-react";
 import type { FormState } from "../types";
 import { DOMAIN_FACTS } from "../mockData";
 import { Card, SectionTitle, Button, Badge } from "./ui";
@@ -33,9 +33,9 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
       {form.domain ? (
         <>
           {/* Domain Context Banner */}
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/90 via-indigo-50/50 to-white p-4 shadow-sm">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50/90 via-emerald-50/50 to-white p-4 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm shadow-indigo-600/30">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm shadow-emerald-600/30">
                 <ListChecks className="h-5 w-5" />
               </div>
               <div>
@@ -43,7 +43,7 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
                   <h3 className="text-sm font-bold text-slate-900">
                     {form.domain} Dispute Context
                   </h3>
-                  <Badge variant="indigo" dot>
+                  <Badge variant="emerald" dot>
                     {selectedCount} of {facts.length} confirmed
                   </Badge>
                 </div>
@@ -76,14 +76,14 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
                   transition={{ delay: idx * 0.04 }}
                   className={`group relative flex cursor-pointer items-start gap-4 rounded-2xl border p-4.5 transition-all duration-200 ${
                     checked
-                      ? "border-indigo-600 bg-gradient-to-r from-indigo-50/80 to-white shadow-sm ring-2 ring-indigo-500/20"
-                      : "border-slate-200/90 bg-white hover:border-indigo-200 hover:bg-slate-50/70 hover:shadow-sm"
+                      ? "border-emerald-600 bg-gradient-to-r from-emerald-50/80 to-white shadow-sm ring-2 ring-emerald-500/20"
+                      : "border-slate-200/90 bg-white hover:border-emerald-200 hover:bg-slate-50/70 hover:shadow-sm"
                   }`}
                 >
                   <div
                     className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-200 ${
                       checked
-                        ? "border-indigo-600 bg-indigo-600 shadow-sm shadow-indigo-600/30"
+                        ? "border-emerald-600 bg-emerald-600 shadow-sm shadow-emerald-600/30"
                         : "border-slate-300 bg-white group-hover:border-slate-400"
                     }`}
                   >
@@ -109,11 +109,11 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
 
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className={`text-sm font-bold transition-colors ${checked ? "text-indigo-950" : "text-slate-800"}`}>
+                      <p className={`text-sm font-bold transition-colors ${checked ? "text-emerald-950" : "text-slate-800"}`}>
                         {fact.label}
                       </p>
                       {checked && (
-                        <span className="text-[11px] font-bold text-indigo-600">
+                        <span className="text-[11px] font-bold text-emerald-600">
                           Confirmed
                         </span>
                       )}
@@ -129,12 +129,12 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
             })}
           </div>
 
-          <div className="mt-6 rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+          <div className="mt-6 rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
             <h4 className="mb-3 text-sm font-bold text-slate-900">Upload Evidence/Proofs</h4>
             <input 
               type="file" 
               multiple 
-              className="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              className="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
               onChange={async (e) => {
                 if (!e.target.files?.length) return;
                 const newProofs = [...(form.proofs || [])];
