@@ -10,33 +10,32 @@ interface BadgeProps {
 
 const variantClasses: Record<NonNullable<BadgeProps["variant"]>, { bg: string; dot: string }> = {
   emerald: {
-    bg: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 border border-emerald-200/60",
-    dot: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]",
+    bg: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 ring-emerald-500/20",
+    dot: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",
   },
   amber: {
-    bg: "bg-amber-50 text-amber-800 ring-amber-600/20 border border-amber-200/60",
-    dot: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]",
+    bg: "bg-amber-500/10 text-amber-300 border border-amber-500/30 ring-amber-500/20",
+    dot: "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]",
   },
-  // Mapped indigo & violet variants to emerald so legacy badge calls render green
   indigo: {
-    bg: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 border border-emerald-200/60",
-    dot: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]",
+    bg: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 ring-emerald-500/20",
+    dot: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",
   },
   violet: {
-    bg: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 border border-emerald-200/60",
-    dot: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]",
+    bg: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 ring-emerald-500/20",
+    dot: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",
   },
   cyan: {
-    bg: "bg-cyan-50 text-cyan-700 ring-cyan-600/20 border border-cyan-200/60",
-    dot: "bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]",
+    bg: "bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 ring-cyan-500/20",
+    dot: "bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]",
   },
   slate: {
-    bg: "bg-slate-100 text-slate-700 ring-slate-400/20 border border-slate-200/80",
+    bg: "bg-slate-800 text-slate-300 border border-slate-700 ring-slate-700/50",
     dot: "bg-slate-400",
   },
   red: {
-    bg: "bg-red-50 text-red-700 ring-red-600/20 border border-red-200/60",
-    dot: "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]",
+    bg: "bg-red-500/10 text-red-400 border border-red-500/30 ring-red-500/20",
+    dot: "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]",
   },
 };
 
@@ -61,8 +60,8 @@ interface CardProps extends HTMLMotionProps<"div"> {
 export function Card({ children, className = "", hoverEffect = false, ...rest }: CardProps) {
   return (
     <motion.div
-      className={`glass-card rounded-3xl border border-slate-200/80 p-6 shadow-card transition-all sm:p-8 ${
-        hoverEffect ? "hover:shadow-card-hover hover:border-emerald-300/80" : ""
+      className={`rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 backdrop-blur-xl shadow-2xl transition-all sm:p-8 text-slate-100 ${
+        hoverEffect ? "hover:border-emerald-500/50 hover:shadow-emerald-950/30" : ""
       } ${className}`}
       {...rest}
     >
@@ -79,15 +78,15 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const buttonVariants = {
   primary:
-    "bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 shadow-md shadow-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/35 active:scale-[0.98]",
+    "bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-950/50 active:scale-[0.98]",
   secondary:
-    "bg-slate-900 text-white hover:bg-slate-800 shadow-sm hover:shadow active:scale-[0.98]",
+    "bg-slate-800 text-slate-100 hover:bg-slate-700 border border-slate-700 shadow-sm active:scale-[0.98]",
   emerald:
-    "bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 shadow-md shadow-emerald-500/25 active:scale-[0.98]",
+    "bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-950/50 active:scale-[0.98]",
   outline:
-    "border border-slate-300/80 bg-white/90 text-slate-700 hover:bg-slate-50 hover:border-slate-400 active:scale-[0.98]",
-  ghost: "text-slate-600 hover:bg-slate-100 hover:text-slate-900 active:scale-[0.98]",
-  danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm active:scale-[0.98]",
+    "border border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-700 hover:text-white active:scale-[0.98]",
+  ghost: "text-slate-400 hover:bg-slate-800 hover:text-white active:scale-[0.98]",
+  danger: "bg-red-600 text-white hover:bg-red-500 shadow-md shadow-red-950/50 active:scale-[0.98]",
 };
 
 const buttonSizes = {
@@ -105,7 +104,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 ${buttonVariants[variant]} ${buttonSizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 ${buttonVariants[variant]} ${buttonSizes[size]} ${className}`}
       {...rest}
     >
       {children}
@@ -122,13 +121,13 @@ interface SectionTitleProps {
 
 export function SectionTitle({ step, title, subtitle, badgeText }: SectionTitleProps) {
   return (
-    <div className="mb-8 border-b border-slate-100 pb-5">
+    <div className="mb-8 border-b border-slate-800/80 pb-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-sm font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-emerald-50">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-600 text-sm font-bold text-white shadow-md shadow-emerald-950 ring-4 ring-emerald-500/20">
             {step}
           </span>
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+          <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
             {title}
           </h2>
         </div>
@@ -139,7 +138,7 @@ export function SectionTitle({ step, title, subtitle, badgeText }: SectionTitleP
         )}
       </div>
       {subtitle && (
-        <p className="mt-2 text-sm leading-relaxed text-slate-500 sm:ml-11">
+        <p className="mt-2 text-sm leading-relaxed text-slate-400 sm:ml-11">
           {subtitle}
         </p>
       )}
