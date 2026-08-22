@@ -17,13 +17,14 @@ const variantClasses: Record<NonNullable<BadgeProps["variant"]>, { bg: string; d
     bg: "bg-amber-50 text-amber-800 ring-amber-600/20 border border-amber-200/60",
     dot: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]",
   },
+  // Mapped indigo & violet variants to emerald so legacy badge calls render green
   indigo: {
-    bg: "bg-indigo-50 text-indigo-700 ring-indigo-600/20 border border-indigo-200/60",
-    dot: "bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]",
+    bg: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 border border-emerald-200/60",
+    dot: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]",
   },
   violet: {
-    bg: "bg-purple-50 text-purple-700 ring-purple-600/20 border border-purple-200/60",
-    dot: "bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]",
+    bg: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 border border-emerald-200/60",
+    dot: "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]",
   },
   cyan: {
     bg: "bg-cyan-50 text-cyan-700 ring-cyan-600/20 border border-cyan-200/60",
@@ -61,7 +62,7 @@ export function Card({ children, className = "", hoverEffect = false, ...rest }:
   return (
     <motion.div
       className={`glass-card rounded-3xl border border-slate-200/80 p-6 shadow-card transition-all sm:p-8 ${
-        hoverEffect ? "hover:shadow-card-hover hover:border-indigo-300/80" : ""
+        hoverEffect ? "hover:shadow-card-hover hover:border-emerald-300/80" : ""
       } ${className}`}
       {...rest}
     >
@@ -78,7 +79,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const buttonVariants = {
   primary:
-    "bg-gradient-to-r from-indigo-600 via-indigo-600 to-blue-600 text-white hover:from-indigo-500 hover:to-blue-500 shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/35 active:scale-[0.98]",
+    "bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 shadow-md shadow-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/35 active:scale-[0.98]",
   secondary:
     "bg-slate-900 text-white hover:bg-slate-800 shadow-sm hover:shadow active:scale-[0.98]",
   emerald:
@@ -124,7 +125,7 @@ export function SectionTitle({ step, title, subtitle, badgeText }: SectionTitleP
     <div className="mb-8 border-b border-slate-100 pb-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-sm font-bold text-white shadow-md shadow-indigo-500/30 ring-4 ring-indigo-50">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-sm font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-emerald-50">
             {step}
           </span>
           <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
@@ -132,7 +133,7 @@ export function SectionTitle({ step, title, subtitle, badgeText }: SectionTitleP
           </h2>
         </div>
         {badgeText && (
-          <Badge variant="indigo" dot>
+          <Badge variant="emerald" dot>
             {badgeText}
           </Badge>
         )}
