@@ -12,11 +12,9 @@ import {
   Info,
   ExternalLink,
   BookOpen,
-  CheckCircle2,
-  Copy,
   Check,
   BookmarkPlus,
-  FolderArchive,
+  Sparkles,
 } from "lucide-react";
 import type { FormState } from "../types";
 import { formatIncidentDate } from "../types";
@@ -51,14 +49,21 @@ interface AssessmentResponse {
   message?: string;
 }
 
+interface ExplanationResponse {
+  summary?: string;
+  rights?: string[];
+  procedural_steps?: string[];
+  potential_relief?: string[];
+}
+
 export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<AssessmentResponse | null>(null);
+  const [explanationData, setExplanationData] = useState<ExplanationResponse | null>(null);
 
   const [openSource, setOpenSource] = useState<string | null>(null);
   const [checkedDocs, setCheckedDocs] = useState<Set<string>>(new Set());
-  const [copiedStatute, setCopiedStatute] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
 
@@ -66,12 +71,12 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
     if (!data) return;
     try {
       setIsSaving(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const res = await fetch("/api/cases", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` 
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           formState: form,
@@ -143,8 +148,7 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
         }
 
         const rawResult = await response.json();
-        
-        // Transform server legal sources into UI statutory cards & sources
+
         const matchedSources = rawResult.matched_sources || [];
         const partialSources = rawResult.partial_sources || [];
         const allSources = [...matchedSources, ...partialSources];
@@ -163,9 +167,8 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
           retrievedOn: s.last_verified,
         }));
 
-        // Dynamic domain-specific document checklists
         let documentChecklist = [
-          { id: "id_proof", label: "Government ID / Identity Verification (Aadhaar / Voter ID / PAN)" },
+          { id: "id_proof", label: "Government ID / Identity Verification" },
           { id: "written_notice", label: "Copy of written notice / representation sent to opposite party" },
         ];
         if (engineDomain === "consumer") {
@@ -211,6 +214,29 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
         if (isMounted) {
           setData(result);
         }
+
+        // Secondary fetch to /api/explain
+        try {
+          const explainRes = await fetch("/api/explain", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              server_computed_status: rawResult.status,
+              validated_sources: allSources,
+              incident_summary: form.narrative,
+            }),
+          });
+
+          if (explainRes.ok) {
+            const expData = await explainRes.json();
+            if (isMounted) {
+              setExplanationData(expData);
+            }
+          }
+        } catch (explainErr) {
+          console.warn("Gemini explanation fallback triggered:", explainErr);
+        }
+
       } catch (err: any) {
         if (isMounted) {
           setError(err.message || "Failed to reach assessment server.");
@@ -235,6 +261,7 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
     form.incidentMonth,
     form.incidentDay,
     form.confirmedFacts,
+    form.narrative,
   ]);
 
   const toggleDoc = (id: string) => {
@@ -244,12 +271,6 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
       else next.add(id);
       return next;
     });
-  };
-
-  const copyStatuteText = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedStatute(text);
-    setTimeout(() => setCopiedStatute(null), 2000);
   };
 
   const renderStatusBadge = (status?: string) => {
@@ -302,9 +323,6 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
           <div>
             <h3 className="text-base font-bold text-red-900">Assessment Service Notice</h3>
             <p className="mt-1 text-sm text-red-700">{error}</p>
-            <p className="mt-2 text-xs text-red-600">
-              Note: Local API endpoints operate through Vite dev server or Vercel serverless functions.
-            </p>
           </div>
         </div>
         <div className="mt-6 flex justify-between">
@@ -319,12 +337,7 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
 
   const statutesList = data?.statutes || [];
   const sourcesList = data?.sources || [];
-  const checklist = data?.documentChecklist || [
-    { id: "proof_purchase", label: "Proof of purchase (invoice / bill / transaction slip)" },
-    { id: "written_complaint", label: "Copy of written notice / email sent to opposite party" },
-    { id: "defect_photos", label: "Photographic or documentary evidence of defect / loss" },
-  ];
-
+  const checklist = data?.documentChecklist || [];
   const checkedCount = checkedDocs.size;
   const isSupported = data?.status === "supported";
   const isPartial = data?.status === "partial";
@@ -375,13 +388,63 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
               </div>
 
               <p className="mt-2 text-sm leading-relaxed text-slate-800 font-medium">
-                {data?.explanation ||
+                {explanationData?.summary ||
+                  data?.explanation ||
                   data?.message ||
                   "The deterministic matcher has evaluated the provided facts against active statutory provisions."}
               </p>
             </div>
           </div>
         </div>
+
+        {/* Structured Gemini Explanation */}
+        {explanationData && (
+          <div className="mb-8 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-5 space-y-4">
+            <div className="flex items-center gap-2 text-indigo-900 font-bold text-sm">
+              <Sparkles className="h-4 w-4 text-indigo-600" />
+              <span>AI Case Analysis</span>
+            </div>
+
+            {explanationData.rights && explanationData.rights.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-950 mb-1.5">
+                  Your Applicable Rights
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-slate-700">
+                  {explanationData.rights.map((right, idx) => (
+                    <li key={idx}>{right}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {explanationData.procedural_steps && explanationData.procedural_steps.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-950 mb-1.5">
+                  Recommended Procedural Steps
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-slate-700">
+                  {explanationData.procedural_steps.map((step, idx) => (
+                    <li key={idx}>{step}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {explanationData.potential_relief && explanationData.potential_relief.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-950 mb-1.5">
+                  Potential Relief Available
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-slate-700">
+                  {explanationData.potential_relief.map((relief, idx) => (
+                    <li key={idx}>{relief}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Statutory Breakdown Cards */}
         <div className="mb-8">
@@ -412,17 +475,6 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
                       <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700 border border-indigo-100">
                         {stat.statute.split("—")[0] || "Act"}
                       </span>
-                      <button
-                        onClick={() => copyStatuteText(`${stat.title} - ${stat.statute}`)}
-                        className="text-slate-400 hover:text-indigo-600 transition-colors"
-                        title="Copy citation"
-                      >
-                        {copiedStatute === `${stat.title} - ${stat.statute}` ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        ) : (
-                          <Copy className="h-3.5 w-3.5" />
-                        )}
-                      </button>
                     </div>
 
                     <h4 className="text-sm font-bold text-slate-900 leading-snug">
@@ -457,7 +509,6 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
                 {sourcesList.length} Verified Sources
               </Badge>
             </div>
-            <span className="text-xs text-slate-400">Official IndiaCode &amp; Portals</span>
           </div>
 
           <div className="space-y-2">
@@ -522,7 +573,7 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
           </div>
         </div>
 
-        {/* Interactive Document Checklist with Progress */}
+        {/* Interactive Document Checklist */}
         <div className="mb-8">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -580,38 +631,6 @@ export default function Step4Assessment({ form, onBack, onNext }: Step4Props) {
             })}
           </div>
         </div>
-
-        {/* Uploaded Proofs Section */}
-        {form.proofs && form.proofs.length > 0 && (
-          <div className="mb-8">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                  Uploaded Evidence
-                </h3>
-                <Badge variant="indigo" dot>
-                  {form.proofs.length} Files
-                </Badge>
-              </div>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {form.proofs.map((proof, idx) => (
-                <div key={idx} className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                  <div className="px-3 py-2 border-b border-slate-200 bg-white">
-                    <span className="text-xs font-bold text-slate-700 truncate block">{proof.name}</span>
-                  </div>
-                  <div className="p-2 h-32 flex items-center justify-center bg-slate-100">
-                    {proof.data.startsWith('data:image/') ? (
-                      <img src={proof.data} alt={proof.name} className="max-h-full object-contain" />
-                    ) : (
-                      <span className="text-xs text-slate-400">Preview not available</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Navigation Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100 pt-6">
