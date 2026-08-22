@@ -10,14 +10,11 @@ import {
   Briefcase,
   Home,
   ArrowRight,
-  Sparkles,
   CheckCircle2,
   User,
-  Building,
 } from "lucide-react";
 import type { Domain, FormState } from "../types";
 import { DOMAINS, STATES, DISTRICTS_BY_STATE, MONTHS } from "../mockData";
-import { Card, SectionTitle, Button, Badge } from "./ui";
 
 interface Step1Props {
   form: FormState;
@@ -149,21 +146,32 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
   const errorClass = (hasError: boolean): string =>
     hasError
       ? "border-red-300 ring-2 ring-red-100 bg-red-50/30 focus:border-red-500 focus:ring-red-200"
-      : "border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10";
+      : "border-slate-200 bg-slate-50/50 hover:bg-white focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10";
 
   return (
-    <Card
+    <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="mx-auto max-w-3xl"
+      className="mx-auto max-w-3xl rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xl shadow-slate-200/50"
     >
-      <SectionTitle
-        step={1}
-        title="Dispute Category & Location"
-        subtitle="Specify the dispute category, jurisdiction, and incident timeline to load relevant statutes."
-        badgeText="Step 1 of 5"
-      />
+      {/* Title Header */}
+      <div className="mb-8 border-b border-slate-100 pb-5">
+        <div className="flex items-center justify-between">
+          <span 
+            style={{ backgroundColor: "#ecfdf5", color: "#047857", borderColor: "#a7f3d0" }} 
+            className="rounded-full border px-3 py-1 text-xs font-bold"
+          >
+            Step 1 of 5
+          </span>
+        </div>
+        <h2 className="mt-3 text-xl font-bold text-slate-900 sm:text-2xl">
+          Dispute Category &amp; Location
+        </h2>
+        <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+          Specify the dispute category, jurisdiction, and incident timeline to load relevant statutes.
+        </p>
+      </div>
 
       {/* Domain Cards */}
       <div className="mb-8">
@@ -183,24 +191,26 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
                 type="button"
                 key={d}
                 onClick={() => handleChange({ domain: d, confirmedFacts: [] })}
-                className={`group relative flex flex-col items-start rounded-2xl border p-4 text-left transition-all duration-200 ${
-                  active
-                    ? "border-indigo-600 bg-gradient-to-b from-indigo-50/90 to-indigo-100/50 shadow-md shadow-indigo-500/10 ring-2 ring-indigo-500/30"
-                    : "border-slate-200/90 bg-white hover:border-indigo-200 hover:bg-slate-50/80 hover:shadow-sm"
-                }`}
+                style={{
+                  backgroundColor: active ? "#ecfdf5" : "#ffffff",
+                  borderColor: active ? "#059669" : "#e2e8f0",
+                  borderWidth: active ? "2px" : "1px",
+                  boxShadow: active ? "0 4px 14px 0 rgba(5, 150, 105, 0.15)" : "none",
+                }}
+                className="group relative flex flex-col items-start rounded-2xl p-4 text-left transition-all duration-200 hover:border-emerald-500 hover:shadow-sm"
               >
                 <div className="flex w-full items-center justify-between mb-2.5">
                   <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all ${
-                      active
-                        ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30"
-                        : "bg-slate-100 text-slate-600 group-hover:bg-indigo-100 group-hover:text-indigo-600"
-                    }`}
+                    style={{
+                      backgroundColor: active ? "#059669" : "#f1f5f9",
+                      color: active ? "#ffffff" : "#475569",
+                    }}
+                    className="flex h-10 w-10 items-center justify-center rounded-xl transition-all"
                   >
                     <Icon className="h-5 w-5" />
                   </div>
                   {active && (
-                    <CheckCircle2 className="h-5 w-5 text-indigo-600" />
+                    <CheckCircle2 className="h-5 w-5" style={{ color: "#059669" }} />
                   )}
                 </div>
 
@@ -209,11 +219,11 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
 
                 <div className="mt-3">
                   <span
-                    className={`rounded-md px-2 py-0.5 text-[10px] font-bold ${
-                      active
-                        ? "bg-indigo-600 text-white"
-                        : "bg-slate-100 text-slate-600 group-hover:bg-slate-200"
-                    }`}
+                    style={{
+                      backgroundColor: active ? "#059669" : "#f1f5f9",
+                      color: active ? "#ffffff" : "#475569",
+                    }}
+                    className="rounded-md px-2 py-0.5 text-[10px] font-bold"
                   >
                     {details.tag}
                   </span>
@@ -306,22 +316,22 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
             <button
               type="button"
               onClick={() => handlePrecisionChange("month")}
-              className={`rounded-lg px-3 py-1 text-xs font-bold transition-all ${
-                form.datePrecision === "month"
-                  ? "bg-white text-indigo-700 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
+              style={{
+                backgroundColor: form.datePrecision === "month" ? "#ffffff" : "transparent",
+                color: form.datePrecision === "month" ? "#047857" : "#64748b",
+              }}
+              className="rounded-lg px-3 py-1 text-xs font-bold transition-all shadow-sm"
             >
               Month Precision
             </button>
             <button
               type="button"
               onClick={() => handlePrecisionChange("day")}
-              className={`rounded-lg px-3 py-1 text-xs font-bold transition-all ${
-                form.datePrecision === "day"
-                  ? "bg-white text-indigo-700 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
+              style={{
+                backgroundColor: form.datePrecision === "day" ? "#ffffff" : "transparent",
+                color: form.datePrecision === "day" ? "#047857" : "#64748b",
+              }}
+              className="rounded-lg px-3 py-1 text-xs font-bold transition-all shadow-sm"
             >
               Exact Day
             </button>
@@ -394,11 +404,15 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
         {/* Date formatted tag */}
         <div className="mt-2.5 flex flex-wrap items-center gap-2">
           {form.incidentYear && form.incidentMonth && (
-            <Badge variant="indigo" dot>
+            <span
+              style={{ backgroundColor: "#ecfdf5", color: "#065f46", borderColor: "#a7f3d0" }}
+              className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-bold"
+            >
+              <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ backgroundColor: "#10b981" }} />
               {form.datePrecision === "day" && form.incidentDay
                 ? `${form.incidentYear}-${String(MONTH_INDEX[form.incidentMonth] + 1).padStart(2, "0")}-${form.incidentDay}`
                 : `${form.incidentYear}-${String(MONTH_INDEX[form.incidentMonth] + 1).padStart(2, "0")} (Full month interval)`}
-            </Badge>
+            </span>
           )}
           {dayOutOfRange && form.datePrecision === "day" && (
             <span className="text-xs font-semibold text-red-600">
@@ -412,7 +426,7 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
       <div className="mb-8">
         <label className="mb-2 flex items-center justify-between text-sm font-bold text-slate-800">
           <span className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-indigo-600" />
+            <FileText className="h-4 w-4" style={{ color: "#059669" }} />
             4. What Happened? (Citizen Narrative)
           </span>
           <span className="text-xs font-normal text-slate-500">
@@ -434,13 +448,19 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
       </div>
 
       {/* Optional: Dispute Parties & Name */}
-      <div className="mb-8 rounded-2xl border border-indigo-100/80 bg-gradient-to-r from-indigo-50/40 via-white to-slate-50/50 p-5">
+      <div 
+        style={{ backgroundColor: "#f0fdf4", borderColor: "#bbf7d0" }}
+        className="mb-8 rounded-2xl border p-5"
+      >
         <div className="mb-3.5 flex items-center justify-between">
           <label className="flex items-center gap-2 text-sm font-bold text-slate-800">
-            <User className="h-4 w-4 text-indigo-600" />
+            <User className="h-4 w-4" style={{ color: "#059669" }} />
             <span>5. Personal &amp; Opposite Party Details (Optional)</span>
           </label>
-          <span className="text-[11px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+          <span 
+            style={{ backgroundColor: "#dcfce7", color: "#166534", borderColor: "#86efac" }}
+            className="text-[11px] font-semibold px-2 py-0.5 rounded-md border"
+          >
             Used for Personalized Notices &amp; PDF
           </span>
         </div>
@@ -455,7 +475,7 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
               value={form.applicantName || ""}
               onChange={(e) => handleChange({ applicantName: e.target.value })}
               placeholder="e.g. Rahul Sharma"
-              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
             />
           </div>
 
@@ -468,7 +488,7 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
               value={form.oppositePartyName || ""}
               onChange={(e) => handleChange({ oppositePartyName: e.target.value })}
               placeholder="e.g. XYZ Electronics Pvt. Ltd."
-              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20"
             />
           </div>
         </div>
@@ -476,12 +496,17 @@ export default function Step1Story({ form, onChange, onNext }: Step1Props) {
 
       {/* CTA Footer */}
       <div className="flex items-center justify-end border-t border-slate-100 pt-6">
-        <Button onClick={handleNext} variant="primary" size="lg">
+        <button
+          type="button"
+          onClick={handleNext}
+          style={{ backgroundColor: "#059669" }}
+          className="inline-flex items-center gap-2.5 rounded-xl px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-emerald-700 active:bg-emerald-800 cursor-pointer"
+        >
           <span>Continue to Fact-Finding</span>
           <ArrowRight className="h-4 w-4" />
-        </Button>
+        </button>
       </div>
-    </Card>
+    </motion.div>
   );
 }
 
