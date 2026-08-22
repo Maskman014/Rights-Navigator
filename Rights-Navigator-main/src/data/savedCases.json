@@ -1,0 +1,41 @@
+[
+  {
+    "id": "RN-CON-2026-8477",
+    "userId": "44e8b97e-110f-413b-b76c-77cd5990ec87",
+    "createdAt": "2026-08-22T16:38:48.363Z",
+    "domain": "Consumer",
+    "state": "Assam",
+    "district": "Golaghat",
+    "incidentDate": "2021-August",
+    "status": "supported",
+    "matchedStatutesCount": 0,
+    "statutes": [],
+    "formState": {
+      "domain": "Consumer",
+      "state": "Assam",
+      "district": "Golaghat",
+      "datePrecision": "month",
+      "incidentYear": "2021",
+      "incidentMonth": "August",
+      "incidentDay": "",
+      "narrative": "cvcv",
+      "confirmedFacts": [
+        "c2",
+        "c3"
+      ],
+      "confirmed": true,
+      "applicantName": "",
+      "applicantPhone": "",
+      "applicantEmail": "",
+      "applicantAddress": "",
+      "oppositePartyName": "",
+      "oppositePartyAddress": "",
+      "demandRelief": "Full refund of the purchase amount along with replacement and compensation of Rs. 10,000/- for deficiency in service."
+    },
+    "assessmentData": {
+      "status": "supported",
+      "statutes": []
+    },
+    "noticeDraft": "APPLICATION FOR OBTAINING INFORMATION UNDER SECTION 6(1) OF THE RIGHT TO INFORMATION ACT, 2005\n\nTo,\nThe Public Information Officer (PIO)\nOffice of the Competent Regulatory Authority / Appellate Department\nDistrict: Golaghat, State: Assam\n\n1. Full Name of Applicant: [Your Full Name]\n2. Address for Correspondence: Golaghat, Assam\n3. Contact Details: [Your Phone / Email]\n\n4. Subject Matter of Information:\nInformation and certified records concerning Consumer regulatory oversight in Golaghat related to incident dated 2021-08.\n\n5. Specific Information Requested:\n   i. Certified copies of citizen grievance redressal SOPs and timeframes applicable to Consumer disputes in Golaghat.\n   ii. Action Taken Report (ATR) and file inspection notes on complaints submitted against [Opposite Party / Organization Name].\n   iii. Certified list of statutory appellate authorities and designated grievance officers empowered to adjudicate this dispute.\n\n6. Period to which information relates: 2021-08 to present date.\n7. Application Fee Details: Rs. 10/- paid via IPO / Online Portal Payment Gateway.\n8. Citizen Declaration: I hereby declare that I am a citizen of India and the information sought falls within the mandate of Section 6(1) of RTI Act, 2005.\n\nPlace: Golaghat\nDate: 2026-08-22\n\n_____________________________\nSignature of Applicant ([Your Full Name])"
+  }
+]
