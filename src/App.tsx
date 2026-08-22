@@ -126,97 +126,109 @@ export default function App() {
   }, []);
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-slate-50 text-slate-900 selection:bg-indigo-600 selection:text-white transition-colors duration-300">
-      {/* Global Background Layer for ALL Pages */}
-      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-60" />
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[1000px] rounded-full bg-gradient-to-tr from-indigo-300/25 via-blue-200/20 to-teal-200/20 blur-3xl" />
-        <div className="absolute top-1/3 right-0 h-[500px] w-[500px] rounded-full bg-emerald-100/30 blur-3xl" />
-        <div className="absolute bottom-0 left-0 h-[450px] w-[600px] rounded-full bg-indigo-100/30 blur-3xl" />
+    <div className="relative min-h-screen w-full bg-[#0a0f1d] text-slate-100 selection:bg-emerald-500 selection:text-white font-sans antialiased overflow-x-hidden">
+      {/* 1. Real Courtroom Lady Justice Background Image Overlay */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-25 mix-blend-luminosity filter brightness-90 contrast-110"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2000')`,
+        }}
+      />
+
+      {/* 2. Dark Ambient Vignette & Radial Gradients */}
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900/40 via-[#0a0f1d]/80 to-[#0a0f1d]" />
+
+      {/* Main Container */}
+      <div className="relative z-10 flex min-h-screen flex-col">
+        {(!token || !user) && !guestMode ? (
+          /* Login Page View */
+          <div className="flex min-h-screen items-center justify-center p-4">
+            <Login onLogin={handleLogin} onSkip={() => setGuestMode(true)} />
+          </div>
+        ) : (
+          /* Stepper App Pages */
+          <>
+            <Header onOpenVault={() => setVaultOpen(true)} vaultCount={vaultCount} />
+            
+            <div className="pt-4">
+              <Stepper currentStep={step} maxStep={maxStep} onStepClick={goToStep} />
+            </div>
+
+            <main className="flex-1 px-4 py-6 sm:px-6 md:py-8">
+              {/* Dark Glassmorphic Card Container: Eliminates white card entirely */}
+              <div className="mx-auto max-w-4xl rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 sm:p-10 shadow-2xl backdrop-blur-xl text-slate-100 transition-all">
+                <AnimatePresence mode="wait">
+                  {step === 1 && (
+                    <Step1Story
+                      key="step1"
+                      form={form}
+                      onChange={updateForm}
+                      onNext={() => goToStep(2)}
+                    />
+                  )}
+                  {step === 2 && (
+                    <Step2Facts
+                      key="step2"
+                      form={form}
+                      onChange={updateForm}
+                      onToggleFact={toggleFact}
+                      onBack={() => setStep(1)}
+                      onNext={() => goToStep(3)}
+                    />
+                  )}
+                  {step === 3 && (
+                    <Step3Summary
+                      key="step3"
+                      form={form}
+                      onBack={() => setStep(2)}
+                      onConfirm={handleConfirm}
+                    />
+                  )}
+                  {step === 4 && (
+                    <Step4Assessment
+                      key="step4"
+                      form={form}
+                      onBack={() => setStep(3)}
+                      onNext={() => goToStep(5)}
+                    />
+                  )}
+                  {step === 5 && (
+                    <Step5Action
+                      key="step5"
+                      form={form}
+                      onBack={() => setStep(4)}
+                      onReset={handleReset}
+                      onUpdateForm={updateForm}
+                    />
+                  )}
+                </AnimatePresence>
+              </div>
+            </main>
+
+            <CaseVaultModal
+              open={vaultOpen}
+              onClose={() => setVaultOpen(false)}
+              onLoadCase={handleLoadCase}
+              onCasesUpdated={setVaultCount}
+            />
+
+            <footer className="border-t border-slate-800/80 bg-[#0a0f1d]/90 backdrop-blur-md py-5 mt-auto">
+              <div className="mx-auto flex max-w-5xl flex-col sm:flex-row items-center justify-between gap-3 px-4 text-xs text-slate-400">
+                <div className="flex items-center gap-2 font-medium">
+                  <ShieldAlert className="h-4 w-4 text-amber-400 shrink-0" />
+                  <span>
+                    Rights Navigator is an educational &amp; navigational instrument and does not substitute formal legal counsel.
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-400">
+                  <Scale className="h-3.5 w-3.5 text-emerald-400" />
+                  <span>India Legal Frameworks • 2026 Edition</span>
+                </div>
+              </div>
+            </footer>
+          </>
+        )}
       </div>
-
-      {(!token || !user) && !guestMode ? (
-        /* Landing / Login View with Global Background */
-        <Login onLogin={handleLogin} onSkip={() => setGuestMode(true)} />
-      ) : (
-        /* Application Stepper Views */
-        <>
-          <Header onOpenVault={() => setVaultOpen(true)} vaultCount={vaultCount} />
-          <Stepper currentStep={step} maxStep={maxStep} onStepClick={goToStep} />
-
-          <main className="flex-1 px-4 py-6 sm:px-6 md:py-8">
-            <div className="mx-auto max-w-4xl rounded-2xl border border-slate-200/80 bg-white/90 p-6 sm:p-10 shadow-xl shadow-slate-200/60 backdrop-blur-md">
-              <AnimatePresence mode="wait">
-                {step === 1 && (
-                  <Step1Story
-                    key="step1"
-                    form={form}
-                    onChange={updateForm}
-                    onNext={() => goToStep(2)}
-                  />
-                )}
-                {step === 2 && (
-                  <Step2Facts
-                    key="step2"
-                    form={form}
-                    onChange={updateForm}
-                    onToggleFact={toggleFact}
-                    onBack={() => setStep(1)}
-                    onNext={() => goToStep(3)}
-                  />
-                )}
-                {step === 3 && (
-                  <Step3Summary
-                    key="step3"
-                    form={form}
-                    onBack={() => setStep(2)}
-                    onConfirm={handleConfirm}
-                  />
-                )}
-                {step === 4 && (
-                  <Step4Assessment
-                    key="step4"
-                    form={form}
-                    onBack={() => setStep(3)}
-                    onNext={() => goToStep(5)}
-                  />
-                )}
-                {step === 5 && (
-                  <Step5Action
-                    key="step5"
-                    form={form}
-                    onBack={() => setStep(4)}
-                    onReset={handleReset}
-                    onUpdateForm={updateForm}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
-          </main>
-
-          <CaseVaultModal
-            open={vaultOpen}
-            onClose={() => setVaultOpen(false)}
-            onLoadCase={handleLoadCase}
-            onCasesUpdated={setVaultCount}
-          />
-
-          <footer className="border-t border-slate-200/80 bg-white/80 py-5 backdrop-blur-md transition-colors">
-            <div className="mx-auto flex max-w-5xl flex-col sm:flex-row items-center justify-between gap-3 px-4 text-xs text-slate-500">
-              <div className="flex items-center gap-2 font-medium">
-                <ShieldAlert className="h-4 w-4 text-amber-600 shrink-0" />
-                <span>
-                  Rights Navigator is an educational &amp; navigational instrument and does not substitute formal legal counsel.
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-400">
-                <Scale className="h-3.5 w-3.5 text-indigo-500" />
-                <span>India Legal Frameworks • 2026 Edition</span>
-              </div>
-            </div>
-          </footer>
-        </>
-      )}
     </div>
   );
 }
