@@ -1,13 +1,17 @@
+
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
 const DB_FILE = path.join(process.cwd(), 'src', 'data', 'users.json');
 
-function loadUsers() {
+function loadUsers(): any[] {
   try {
     if (fs.existsSync(DB_FILE)) {
-      return JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+      const data = fs.readFileSync(DB_FILE, 'utf-8').trim();
+      if (!data) return [];
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
     }
   } catch (e) {
     console.error('Error reading users DB:', e);
@@ -58,7 +62,7 @@ export default function handler(req: any, res: any) {
         id: crypto.randomUUID(),
         username,
         passwordHash: hashPassword(password),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       users.push(newUser);
@@ -75,11 +79,11 @@ export default function handler(req: any, res: any) {
 
       // Simple pseudo-token using base64 encoded user ID
       const token = Buffer.from(user.id).toString('base64');
-      
-      return res.status(200).json({ 
-        success: true, 
-        token, 
-        user: { id: user.id, username: user.username } 
+
+      return res.status(200).json({
+        success: true,
+        token,
+        user: { id: user.id, username: user.username },
       });
     }
 
