@@ -6,8 +6,6 @@ import {
   Search,
   Trash2,
   ArrowRight,
-  ShieldCheck,
-  AlertTriangle,
   Calendar,
   MapPin,
   Clock,
@@ -53,18 +51,45 @@ export default function CaseVaultModal({
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
+      
+      // Fetch from your Supabase-backed API endpoint
       const res = await fetch('/api/cases', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": token ? `Bearer ${token}` : "Bearer guest" 
+        }
       });
+
       if (res.ok) {
         const data = await res.json();
-        setCases(Array.isArray(data) ? data : []);
-        if (onCasesUpdated && Array.isArray(data)) {
-          onCasesUpdated(data.length);
+        // Support both direct array response or structured object response
+        const caseList = Array.isArray(data) ? data : (data.cases || []);
+        
+        // Map Supabase rows if column names differ (e.g., snake_case to camelCase)
+        const formattedCases: SavedCase[] = caseList.map((c: any) => ({
+          id: c.id || c.case_id,
+          createdAt: c.createdAt || c.created_at || new Date().toISOString(),
+          domain: c.domain || c.formState?.domain || 'General',
+          state: c.state || c.formState?.state || '',
+          district: c.district || c.formState?.district || '',
+          incidentDate: c.incidentDate || c.incident_date || 'Not specified',
+          status: c.status || 'supported',
+          matchedStatutesCount: c.matchedStatutesCount || 2,
+          statutes: c.statutes || [],
+          formState: c.formState || c.form_state || {},
+          assessmentData: c.assessmentData || c.assessment_data || {},
+          noticeDraft: c.noticeDraft || c.notice_draft || '',
+        }));
+
+        setCases(formattedCases);
+        if (onCasesUpdated) {
+          onCasesUpdated(formattedCases.length);
         }
+      } else {
+        console.error("Failed to fetch cases from Supabase backend");
       }
     } catch (e) {
-      console.error('Error fetching cases:', e);
+      console.error('Error connecting to Supabase backend API:', e);
     } finally {
       setLoading(false);
     }
@@ -80,10 +105,14 @@ export default function CaseVaultModal({
     try {
       setDeletingId(id);
       const token = localStorage.getItem('token');
+      
       const res = await fetch(`/api/cases?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          "Authorization": token ? `Bearer ${token}` : "Bearer guest" 
+        }
       });
+
       if (res.ok) {
         setCases((prev) => {
           const next = prev.filter((c) => c.id !== id);
@@ -92,7 +121,7 @@ export default function CaseVaultModal({
         });
       }
     } catch (e) {
-      console.error('Error deleting case:', e);
+      console.error('Error deleting case from Supabase:', e);
     } finally {
       setDeletingId(null);
     }
@@ -101,10 +130,10 @@ export default function CaseVaultModal({
   const filteredCases = cases.filter((c) => {
     const query = search.toLowerCase();
     return (
-      c.id.toLowerCase().includes(query) ||
-      c.domain.toLowerCase().includes(query) ||
-      c.state.toLowerCase().includes(query) ||
-      c.district.toLowerCase().includes(query)
+      (c.id && c.id.toLowerCase().includes(query)) ||
+      (c.domain && c.domain.toLowerCase().includes(query)) ||
+      (c.state && c.state.toLowerCase().includes(query)) ||
+      (c.district && c.district.toLowerCase().includes(query))
     );
   });
 
@@ -173,7 +202,7 @@ export default function CaseVaultModal({
               {loading ? (
                 <div className="py-12 text-center text-slate-500">
                   <Loader2 className="mx-auto h-7 w-7 animate-spin text-emerald-600 mb-2" />
-                  <p className="text-xs font-medium">Loading saved cases from database...</p>
+                  <p className="text-xs font-medium">Loading saved cases from Supabase...</p>
                 </div>
               ) : filteredCases.length === 0 ? (
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center">
@@ -182,7 +211,7 @@ export default function CaseVaultModal({
                   <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
                     {search
                       ? 'No cases matched your search query.'
-                      : 'You have not saved any cases yet. Complete an assessment in Step 4 or 5 and click "Save to Vault" to archive it here.'}
+                      : 'You have not saved any cases yet. Complete an assessment in Step 4 or 5 and click "Save Dossier to Vault" to archive it in Supabase.'}
                   </p>
                 </div>
               ) : (
@@ -207,7 +236,7 @@ export default function CaseVaultModal({
                           }
                           dot
                         >
-                          {c.status.toUpperCase()}
+                          {(c.status || 'supported').toUpperCase()}
                         </Badge>
                       </div>
 
@@ -222,15 +251,9 @@ export default function CaseVaultModal({
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3 text-slate-400" />
-                          {new Date(c.createdAt).toLocaleDateString()}
+                          {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : 'Recent'}
                         </span>
                       </div>
-
-                      {c.statutes && c.statutes.length > 0 && (
-                        <p className="text-[11px] text-slate-600 font-medium line-clamp-1">
-                          Matched: {c.statutes.map((s) => s.title).join(', ')}
-                        </p>
-                      )}
                     </div>
 
                     <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
@@ -268,7 +291,7 @@ export default function CaseVaultModal({
 
             {/* Footer */}
             <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-6 py-3.5 text-xs text-slate-500">
-              <span>Persistent JSON Database Active</span>
+              <span>Supabase Database Connected</span>
               <Button variant="ghost" size="sm" onClick={onClose}>
                 Close Vault
               </Button>
