@@ -380,49 +380,9 @@ Signature of Applicant (${effectiveApplicantName})`;
   const handleSaveToVault = async () => {
     try {
       setIsSaving(true);
-      const token = localStorage.getItem('token');
-      const casePayload = {
-        formState: {
-          ...form,
-          applicantName,
-          applicantPhone,
-          applicantEmail,
-          applicantAddress,
-          oppositePartyName,
-          oppositePartyAddress,
-          demandRelief,
-        },
-        assessmentData: {
-          status: "supported",
-          statutes: [],
-        },
-        noticeDraft: currentDraftText,
-      };
-
-      // 1. Attempt sending to backend server first
-      const res = await fetch("/api/cases", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": token ? `Bearer ${token}` : "Bearer guest" 
-        },
-        body: JSON.stringify(casePayload),
-      });
-
-      if (res.ok) {
-        const json = await res.json();
-        const generatedId = json.case?.id || `RN-${(form.domain || "GEN").substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-4)}`;
-        setSavedId(generatedId);
-        setTimeout(() => setSavedId(null), 3500);
-        return;
-      }
-      throw new Error('Server returned non-OK status');
-    } catch (e) {
-      console.warn("Server save failed, falling back to local storage vault for hackathon demo:", e);
-
-      // 2. Fallback: Save to localStorage immediately so it is guaranteed to show up in the modal vault
-      const fallbackCase = {
-        id: `RN-${(form.domain || "GEN").substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-4)}`,
+      
+      const newCaseObj = {
+        id: `RN-${(form.domain || "GEN").substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
         createdAt: new Date().toISOString(),
         domain: form.domain || "General",
         state: form.state || "",
@@ -445,12 +405,31 @@ Signature of Applicant (${effectiveApplicantName})`;
         noticeDraft: currentDraftText,
       };
 
+      // 1. Save directly to localStorage FIRST so it's instantly guaranteed to show up in the Case Vault modal
       const existing = localStorage.getItem('rights_navigator_vault');
       const parsed = existing ? JSON.parse(existing) : [];
-      localStorage.setItem('rights_navigator_vault', JSON.stringify([fallbackCase, ...parsed]));
+      const updated = [newCaseObj, ...(Array.isArray(parsed) ? parsed : [])];
+      localStorage.setItem('rights_navigator_vault', JSON.stringify(updated));
 
-      setSavedId(fallbackCase.id);
+      // 2. Also try syncing with your backend API in the background (will not block the vault from working)
+      const token = localStorage.getItem('token');
+      fetch("/api/cases", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": token ? `Bearer ${token}` : "Bearer guest" 
+        },
+        body: JSON.stringify({
+          formState: newCaseObj.formState,
+          assessmentData: newCaseObj.assessmentData,
+          noticeDraft: currentDraftText,
+        }),
+      }).catch(err => console.log("Background API sync skipped:", err));
+
+      setSavedId(newCaseObj.id);
       setTimeout(() => setSavedId(null), 3500);
+    } catch (e) {
+      console.error("Error saving case:", e);
     } finally {
       setIsSaving(false);
     }
