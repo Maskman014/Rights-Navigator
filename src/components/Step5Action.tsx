@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import {
   ArrowLeft,
   FileText,
@@ -36,7 +36,7 @@ export default function Step5Action({ form, onBack, onReset, onUpdateForm }: Ste
   const [savedId, setSavedId] = useState<string | null>(null);
   const [showPersonalize, setShowPersonalize] = useState(true);
 
-  // Local overrides for personalization if onUpdateForm is not passed
+  // Local overrides for personalization
   const [applicantName, setApplicantName] = useState(form.applicantName || "");
   const [applicantPhone, setApplicantPhone] = useState(form.applicantPhone || "");
   const [applicantEmail, setApplicantEmail] = useState(form.applicantEmail || "");
@@ -76,12 +76,18 @@ export default function Step5Action({ form, onBack, onReset, onUpdateForm }: Ste
       ? "Code on Wages, 2019 (Section 17) / Payment of Gratuity Act, 1972 & Industrial Disputes Act, 1947"
       : `State Rent Control Legislation (${form.state || "State"}) and Applicable Model Tenancy Principles`;
 
-  // Dynamic Draft Texts
-  const grievanceDraft = `FORMAL LEGAL GRIEVANCE & DEMAND NOTICE
+  // Stable Reference Number using useMemo to prevent jitter on keystrokes
+  const caseRefCode = useMemo(() => {
+    return `RN/${(form.domain || "CASE").substring(0, 3).toUpperCase()}/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
+  }, [form.domain]);
+
+  // Dynamic Draft Texts memoized for performance and stability
+  const grievanceDraft = useMemo(() => {
+    return `FORMAL LEGAL GRIEVANCE & DEMAND NOTICE
 (Under ${statutoryRef})
 
 Date: ${new Date().toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })}
-Ref: RN/${(form.domain || "CASE").substring(0, 3).toUpperCase()}/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}
+Ref: ${caseRefCode}
 
 FROM:
 ${effectiveApplicantName}
@@ -127,8 +133,25 @@ _____________________________
 ${effectiveApplicantName}
 (Complainant / Claimant)
 Place: ${form.district || "[District]"}, ${form.state || "[State]"}`;
+  }, [
+    statutoryRef,
+    caseRefCode,
+    effectiveApplicantName,
+    effectiveApplicantAddress,
+    effectiveApplicantContact,
+    effectiveOppositeParty,
+    effectiveOppositeAddress,
+    form.domain,
+    form.district,
+    form.state,
+    dateDisplay,
+    confirmedFactLabels,
+    form.narrative,
+    demandRelief,
+  ]);
 
-  const rtiDraft = `APPLICATION FOR OBTAINING INFORMATION UNDER SECTION 6(1) OF THE RIGHT TO INFORMATION ACT, 2005
+  const rtiDraft = useMemo(() => {
+    return `APPLICATION FOR OBTAINING INFORMATION UNDER SECTION 6(1) OF THE RIGHT TO INFORMATION ACT, 2005
 
 To,
 The Public Information Officer (PIO)
@@ -156,6 +179,16 @@ Date: ${new Date().toISOString().split("T")[0]}
 
 _____________________________
 Signature of Applicant (${effectiveApplicantName})`;
+  }, [
+    form.district,
+    form.state,
+    effectiveApplicantName,
+    effectiveApplicantAddress,
+    effectiveApplicantContact,
+    form.domain,
+    dateDisplay,
+    effectiveOppositeParty,
+  ]);
 
   const currentDraftText = activeTab === "notice" ? grievanceDraft : rtiDraft;
 
@@ -222,8 +255,7 @@ Signature of Applicant (${effectiveApplicantName})`;
     doc.setFontSize(8);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(51, 65, 85);
-    const refCode = `RN/${(form.domain || "CASE").substring(0, 3).toUpperCase()}/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
-    doc.text(`REF: ${refCode}`, margin + 4, y + 7.5);
+    doc.text(`REF: ${caseRefCode}`, margin + 4, y + 7.5);
     doc.text(
       `DATE: ${new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}`,
       pageWidth / 2 - 10,
@@ -382,7 +414,7 @@ Signature of Applicant (${effectiveApplicantName})`;
       setIsSaving(true);
       
       const newCaseObj = {
-        id: `RN-${(form.domain || "GEN").substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        id: caseRefCode,
         createdAt: new Date().toISOString(),
         domain: form.domain || "General",
         state: form.state || "",
@@ -405,13 +437,11 @@ Signature of Applicant (${effectiveApplicantName})`;
         noticeDraft: currentDraftText,
       };
 
-      // 1. Save directly to localStorage FIRST so it's instantly guaranteed to show up in the Case Vault modal
       const existing = localStorage.getItem('rights_navigator_vault');
       const parsed = existing ? JSON.parse(existing) : [];
       const updated = [newCaseObj, ...(Array.isArray(parsed) ? parsed : [])];
       localStorage.setItem('rights_navigator_vault', JSON.stringify(updated));
 
-      // 2. Also try syncing with your backend API in the background (will not block the vault from working)
       const token = localStorage.getItem('token');
       fetch("/api/cases", {
         method: "POST",
