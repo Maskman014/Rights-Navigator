@@ -2,7 +2,7 @@
 import crypto from 'crypto';
 import { connectDB } from './db';
 import { User } from './models';
-
+console.log("AUTH API CALLED");
 function hashPassword(password: string) {
   return crypto.createHash('sha256').update(password).digest('hex');
 }
