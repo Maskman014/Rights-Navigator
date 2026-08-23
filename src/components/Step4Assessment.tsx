@@ -382,7 +382,8 @@ export default function Step4Assessment({
             Evaluating statutory conditions, temporal jurisdiction bounds, and source hierarchy for{" "}
             <span className="font-semibold text-slate-200">
               {form.state || "selected jurisdiction"}
-            </span>.
+            </span>
+            .
           </p>
         </Card>
       </div>
