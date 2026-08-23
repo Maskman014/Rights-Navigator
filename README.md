@@ -1,15 +1,23 @@
 # ⚖️ Rights Navigator — India Law Edition
 
 <p align="center">
-  <strong>Understand Your Rights. Take the Right Action.</strong>
+  <img src="https://img.shields.io/badge/AI-Legal%20Tech-blueviolet?style=for-the-badge" alt="AI Legal Tech">
+  <img src="https://img.shields.io/badge/Civic-Tech-blue?style=for-the-badge" alt="Civic Tech">
+  <img src="https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React">
+  <img src="https://img.shields.io/badge/Node.js-Backend-green?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+</p>
+
+<h1 align="center">⚖️ Rights Navigator</h1>
+
+<h3 align="center">
+Understand Your Rights. Take the Right Action.
+</h3>
+
+<p align="center">
+An AI-assisted Civic & Legal Technology platform designed to help citizens understand their rights, navigate common legal situations, organize evidence, and discover practical next steps.
 </p>
 
 <p align="center">
-  An AI-assisted civic and legal navigation platform designed to help citizens understand their rights, evaluate common legal situations, organize evidence, and take practical next steps.
-</p>
-
-<p align="center">
-
   <a href="https://rights-navigator-v8pc.onrender.com/">
     🌐 Live Demo
   </a>
@@ -17,16 +25,15 @@
   <a href="https://github.com/Maskman014/Rights-Navigator">
     📦 GitHub Repository
   </a>
-
 </p>
 
 ---
 
 ## 🚀 About The Project
 
-**Rights Navigator** is a Civic-Tech and Legal-Tech platform designed to make legal and civic information easier for ordinary citizens to understand and navigate.
+**Rights Navigator** is a Civic-Tech and Legal-Tech platform created to make legal and civic information easier for ordinary citizens to understand and navigate.
 
-Many people face problems related to:
+Many citizens face problems related to:
 
 - 🛒 Consumer complaints
 - 💼 Workplace issues
@@ -36,9 +43,13 @@ Many people face problems related to:
 - 📋 RTI applications
 - ⚖️ Understanding basic rights
 
-However, legal information is often difficult to understand because it is spread across different documents, websites, laws, and government resources.
+However, legal information is often difficult to understand because it is distributed across laws, government portals, legal documents, and complex terminology.
 
-**Rights Navigator** aims to simplify this journey by providing structured legal information, guided questions, evidence checklists, case management, and document-generation tools.
+**Rights Navigator** brings these resources into a simple, citizen-friendly workflow.
+
+The platform helps users:
+
+> **Describe a problem → Understand applicable rights → Identify useful evidence → Explore possible actions → Organize the case**
 
 ---
 
@@ -46,39 +57,61 @@ However, legal information is often difficult to understand because it is spread
 
 Citizens often know that something is wrong but don't know:
 
-> "What are my rights?"
+> ❓ What are my rights?
 
-> "Which law applies to my situation?"
+> ❓ Which law applies to my situation?
 
-> "What evidence should I collect?"
+> ❓ What evidence should I collect?
 
-> "Where should I complain?"
+> ❓ Where should I complain?
 
-> "What should I do next?"
+> ❓ What should I do next?
 
-Rights Navigator is designed to help answer these questions through a simple, citizen-friendly interface.
+Traditional legal research can be intimidating, time-consuming, and difficult for people without legal knowledge.
+
+### Our Goal
+
+Build a technology platform that transforms complicated legal information into:
+
+- Simple explanations
+- Structured legal guidance
+- Evidence checklists
+- Practical next steps
+- Organized case records
+- Useful document templates
 
 ---
 
 ## 💡 Our Solution
 
-The platform follows a simple workflow:
+Rights Navigator provides a guided legal-navigation workflow.
 
 ```text
-Describe Your Problem
-        ↓
-Select Legal Domain
-        ↓
-Provide Case Details
-        ↓
-Evaluate Applicable Rules
-        ↓
-Understand Your Rights
-        ↓
-Get Evidence Checklist
-        ↓
-Explore Possible Actions
-        ↓
-Save Your Case
-        ↓
-Generate Documents
+                 USER
+                   │
+                   ▼
+        Describe Your Problem
+                   │
+                   ▼
+          Select Legal Domain
+                   │
+                   ▼
+          Provide Case Details
+                   │
+                   ▼
+        Evaluate Relevant Rules
+                   │
+                   ▼
+          Understand Your Rights
+                   │
+                   ▼
+        Evidence / Document List
+                   │
+                   ▼
+          Possible Next Actions
+                   │
+                   ▼
+              Save Case
+                   │
+                   ▼
+          Generate Documents
