@@ -30,7 +30,7 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-600 text-xs font-bold text-white shadow-md shadow-emerald-600/20">
               2
             </div>
-            <h2 className="text-xl font-extrabold text-slate-900 tracking-tight sm:text-2xl">
+            <h2 className="text-xl font-extrabold text-slate-900 tracking-tight sm:text-2xl" style={{ color: '#0f172a' }}>
               Fact-Finding Context Builder
             </h2>
           </div>
@@ -40,7 +40,7 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
           </span>
         </div>
 
-        <p className="mt-2 text-xs text-slate-500 sm:text-sm leading-relaxed">
+        <p className="mt-2 text-xs text-slate-600 sm:text-sm leading-relaxed" style={{ color: '#475569' }}>
           Confirm key evidentiary facts that establish statutory locus standi and substantive rights.
         </p>
       </div>
@@ -55,14 +55,14 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-slate-900">
+                  <h3 className="text-sm font-bold text-slate-900" style={{ color: '#0f172a' }}>
                     {form.domain} Dispute Context
                   </h3>
                   <Badge variant="emerald" dot>
                     {selectedCount} of {facts.length} confirmed
                   </Badge>
                 </div>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-600" style={{ color: '#475569' }}>
                   Select all evidentiary circumstances that apply to your situation
                 </p>
               </div>
@@ -73,7 +73,7 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
           {form.domain === "Tenant" && (
             <div className="mb-6 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-900 shadow-sm">
               <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
-              <div className="text-xs leading-relaxed sm:text-sm">
+              <div className="text-xs leading-relaxed sm:text-sm text-amber-900">
                 <span className="font-bold">Dataset Notice for Tenancy Disputes:</span> Verified canonical source records in this prototype currently index the <span className="font-semibold">Madhya Pradesh Accommodation Control Act, 1961</span>. Tenancy cases from other states will indicate limited statutory coverage.
               </div>
             </div>
@@ -115,7 +115,10 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
 
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className={`text-sm font-bold transition-colors ${checked ? "text-emerald-950" : "text-slate-900"}`}>
+                      <p 
+                        className="text-sm font-bold transition-colors" 
+                        style={{ color: checked ? '#064e3b' : '#0f172a' }}
+                      >
                         {fact.label}
                       </p>
                       {checked && (
@@ -125,7 +128,10 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
                       )}
                     </div>
                     {fact.hint && (
-                      <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                      <p 
+                        className="mt-1 text-xs leading-relaxed" 
+                        style={{ color: '#475569' }}
+                      >
                         {fact.hint}
                       </p>
                     )}
@@ -136,11 +142,11 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
           </div>
 
           <div className="mt-6 rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
-            <h4 className="mb-3 text-sm font-bold text-slate-900">Upload Evidence/Proofs</h4>
+            <h4 className="mb-3 text-sm font-bold text-slate-900" style={{ color: '#0f172a' }}>Upload Evidence/Proofs</h4>
             <input 
               type="file" 
               multiple 
-              className="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+              className="text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
               onChange={async (e) => {
                 if (!e.target.files?.length) return;
                 const newProofs = [...(form.proofs || [])];
