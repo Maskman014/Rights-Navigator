@@ -1,22 +1,9 @@
-const mongoose = require('mongoose');
+const { createClient } = require('@supabase/supabase-js');
 
-let cachedDb = null;
-
-async function connectDB() {
-  if (cachedDb && mongoose.connection.readyState === 1) {
-    return cachedDb;
-  }
-
-  if (!process.env.MONGODB_URI) {
-    throw new Error('Please define the MONGODB_URI environment variable inside Vercel.');
-  }
-
-  const opts = {
-    bufferCommands: false,
-  };
- 
-  cachedDb = await mongoose.connect(process.env.MONGODB_URI, opts);
-  return cachedDb;
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+  throw new Error('Please define SUPABASE_URL and SUPABASE_ANON_KEY environment variables inside Vercel.');
 }
 
-module.exports = connectDB;
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+
+module.exports = supabase;
