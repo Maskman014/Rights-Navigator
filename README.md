@@ -115,3 +115,56 @@ Rights Navigator provides a guided legal-navigation workflow.
                    │
                    ▼
           Generate Documents
+---
+##System Architecture
+
+┌──────────────────────────────────────────────┐
+│                    USER                      │
+│                                              │
+│   Problem → Details → Rights → Action       │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│              REACT FRONTEND                  │
+│                                              │
+│  • User Interface                            │
+│  • Forms                                     │
+│  • Legal Results                             │
+│  • Case Vault                                │
+│  • Evidence Checklist                        │
+│  • PDF Generation                            │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│              EXPRESS BACKEND                 │
+│                                              │
+│        API / Authentication / Data           │
+└───────────────┬──────────────────────────────┘
+                │
+       ┌────────┴─────────┐
+       │                  │
+       ▼                  ▼
+┌───────────────┐  ┌─────────────────────────┐
+│ Legal Sources │  │       Supabase          │
+│               │  │                         │
+│ legalSources  │  │ Authentication          │
+│    .json      │  │ User Data               │
+└───────┬───────┘  └─────────────────────────┘
+        │
+        ▼
+┌─────────────────────────────┐
+│     Legal Rule Matching     │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│    AI Explanation Layer     │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Guidance + Evidence +       │
+│ Action + Documents          │
+└─────────────────────────────┘
