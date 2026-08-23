@@ -1,8 +1,7 @@
 const crypto = require('crypto');
-const connectDB = require('./db');
-const { User } = require('./models');
+const supabase = require('./db');
 
-console.log("AUTH API CALLED");
+console.log("SUPABASE AUTH API CALLED");
 
 function hashPassword(password) {
   return crypto.createHash('sha256').update(password).digest('hex');
@@ -18,8 +17,6 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    await connectDB();
-
     const { username, password } = req.body || {};
 
     if (!username || !password) {
@@ -27,32 +24,45 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === 'register') {
-      const existingUser = await User.findOne({ email: username });
+      // Check if user already exists in Supabase 'users' table
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', username)
+        .maybeSingle();
+
       if (existingUser) {
         return res.status(400).json({ error: 'Username already exists' });
       }
 
-      await User.create({
-        email: username,
-        passwordHash: hashPassword(password),
-        createdAt: new Date(),
-      });
+      // Insert new user into Supabase
+      const { error } = await supabase.from('users').insert([
+        { email: username, password_hash: hashPassword(password) }
+      ]);
+
+      if (error) throw error;
 
       return res.status(201).json({ success: true, message: 'User registered successfully' });
     }
 
     if (action === 'login') {
-      const user = await User.findOne({ email: username });
-      if (!user || user.passwordHash !== hashPassword(password)) {
+      // Fetch user from Supabase 'users' table
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', username)
+        .maybeSingle();
+
+      if (error || !user || user.password_hash !== hashPassword(password)) {
         return res.status(401).json({ error: 'Invalid username or password' });
       }
 
-      const token = Buffer.from(user._id.toString()).toString('base64');
+      const token = Buffer.from(user.id.toString()).toString('base64');
 
       return res.status(200).json({
         success: true,
         token,
-        user: { id: user._id.toString(), username: user.email },
+        user: { id: user.id.toString(), username: user.email },
       });
     }
 
