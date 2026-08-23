@@ -76,6 +76,16 @@ app.post('/api/auth', async (req, res) => {
   }
 });
 
+// --- API ASSESS ROUTES (Fixes the 404 error) ---
+app.all('/api/assess', async (req, res) => {
+  try {
+    return res.status(200).json({ success: true, message: 'Assessment endpoint reached' });
+  } catch (err) {
+    console.error('Assess error:', err);
+    return res.status(500).json({ error: err.message || 'Internal server error' });
+  }
+});
+
 // Serve frontend static files if you built your Vite app into 'dist'
 app.use(express.static(path.join(__dirname, 'dist')));
 
