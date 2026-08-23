@@ -124,7 +124,7 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
 
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className={`text-sm font-bold transition-colors ${checked ? "text-emerald-950" : "text-slate-800"}`}>
+                      <p className={`text-sm font-bold transition-colors ${checked ? "text-emerald-950" : "text-slate-900"}`}>
                         {fact.label}
                       </p>
                       {checked && (
@@ -134,7 +134,7 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
                       )}
                     </div>
                     {fact.hint && (
-                      <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                      <p className="mt-1 text-xs leading-relaxed text-slate-600">
                         {fact.hint}
                       </p>
                     )}
