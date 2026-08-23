@@ -1,4 +1,4 @@
-// Auth API — User Registration & Login (MongoDB Edition)
+// api/auth.ts
 import crypto from 'crypto';
 import { connectDB } from './db';
 import { User } from './models';
@@ -10,7 +10,7 @@ function hashPassword(password: string) {
 export default async function handler(req: any, res: any) {
   const method = req.method;
   const url = new URL(req.url || '', 'http://localhost');
-  const action = url.searchParams.get('action'); // e.g. ?action=login or ?action=register
+  const action = url.searchParams.get('action');
 
   if (method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -46,7 +46,6 @@ export default async function handler(req: any, res: any) {
         return res.status(401).json({ error: 'Invalid username or password' });
       }
 
-      // Simple pseudo-token using base64 encoded user ID
       const token = Buffer.from(user._id.toString()).toString('base64');
 
       return res.status(200).json({
