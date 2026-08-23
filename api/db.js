@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 let cachedDb = null;
 
-async function connectDB() {
+export default async function connectDB() {
   if (cachedDb && mongoose.connection.readyState === 1) {
     return cachedDb;
   }
@@ -18,5 +18,3 @@ async function connectDB() {
   cachedDb = await mongoose.connect(process.env.MONGODB_URI, opts);
   return cachedDb;
 }
-
-module.exports = connectDB;
