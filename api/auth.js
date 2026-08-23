@@ -1,13 +1,14 @@
-// api/auth.ts
-import crypto from 'crypto';
-import { connectDB } from './db';
-import { User } from './models';
+const crypto = require('crypto');
+const connectDB = require('./db');
+const { User } = require('./models');
+
 console.log("AUTH API CALLED");
-function hashPassword(password: string) {
+
+function hashPassword(password) {
   return crypto.createHash('sha256').update(password).digest('hex');
 }
 
-export default async function handler(req: any, res: any) {
+module.exports = async function handler(req, res) {
   const method = req.method;
   const url = new URL(req.url || '', 'http://localhost');
   const action = url.searchParams.get('action');
@@ -56,8 +57,8 @@ export default async function handler(req: any, res: any) {
     }
 
     return res.status(400).json({ error: 'Invalid action' });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Auth handler error:', err);
     return res.status(500).json({ error: err.message || 'Internal server error' });
   }
-}
+};
