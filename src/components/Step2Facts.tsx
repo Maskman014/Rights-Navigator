@@ -23,7 +23,7 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
       transition={{ duration: 0.3 }}
       className="mx-auto max-w-3xl"
     >
-      {/* Step Title Header (Converted to Emerald) */}
+      {/* Step Title Header */}
       <div className="mb-8">
         <div className="flex flex-wrap items-center justify-between gap-2.5">
           <div className="flex items-center gap-3">
@@ -84,11 +84,9 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
             {facts.map((fact, idx) => {
               const checked = form.confirmedFacts.includes(fact.id);
               return (
-                <motion.label
+                <div
                   key={fact.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.04 }}
+                  onClick={() => onToggleFact(fact.id)}
                   className={`group relative flex cursor-pointer items-start gap-4 rounded-2xl border p-4.5 transition-all duration-200 ${
                     checked
                       ? "border-emerald-600 bg-gradient-to-r from-emerald-50/80 to-white shadow-sm ring-2 ring-emerald-500/20"
@@ -115,13 +113,6 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
                     </AnimatePresence>
                   </div>
 
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => onToggleFact(fact.id)}
-                    className="sr-only"
-                  />
-
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <p className={`text-sm font-bold transition-colors ${checked ? "text-emerald-950" : "text-slate-900"}`}>
@@ -139,7 +130,7 @@ export default function Step2Facts({ form, onToggleFact, onChange, onBack, onNex
                       </p>
                     )}
                   </div>
-                </motion.label>
+                </div>
               );
             })}
           </div>
