@@ -127,15 +127,15 @@ export default function CaseVaultModal({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-start justify-between border-b border-slate-800 bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 px-6 py-5 text-white">
+            <div className="flex items-start justify-between border-b border-slate-800 bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950 px-6 py-5 text-white">
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600/80 text-white shadow-md ring-2 ring-white/20">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-md ring-2 ring-white/20">
                   <FolderArchive className="h-5.5 w-5.5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-white">Case Vault &amp; Database</h2>
-                    <span className="rounded-md bg-indigo-500/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-indigo-300 ring-1 ring-inset ring-indigo-400/30 uppercase">
+                    <span className="rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-emerald-300 ring-1 ring-inset ring-emerald-400/30 uppercase">
                       {cases.length} Saved Cases
                     </span>
                   </div>
@@ -163,7 +163,7 @@ export default function CaseVaultModal({
                   placeholder="Search cases by ID, domain, state, or location..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-10 pr-4 text-xs font-medium text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-10 pr-4 text-xs font-medium text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                 />
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function CaseVaultModal({
             <div className="no-scrollbar overflow-y-auto p-6 space-y-3.5 max-h-[60vh]">
               {loading ? (
                 <div className="py-12 text-center text-slate-500">
-                  <Loader2 className="mx-auto h-7 w-7 animate-spin text-indigo-600 mb-2" />
+                  <Loader2 className="mx-auto h-7 w-7 animate-spin text-emerald-600 mb-2" />
                   <p className="text-xs font-medium">Loading saved cases from database...</p>
                 </div>
               ) : filteredCases.length === 0 ? (
@@ -189,14 +189,14 @@ export default function CaseVaultModal({
                 filteredCases.map((c) => (
                   <div
                     key={c.id}
-                    className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4.5 shadow-sm transition-all hover:border-indigo-300 hover:shadow-md"
+                    className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4.5 shadow-sm transition-all hover:border-emerald-300 hover:shadow-md"
                   >
                     <div className="space-y-1.5 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                        <span className="font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
                           {c.id}
                         </span>
-                        <Badge variant="indigo">{c.domain}</Badge>
+                        <Badge variant="emerald">{c.domain}</Badge>
                         <Badge
                           variant={
                             c.status === 'supported'
