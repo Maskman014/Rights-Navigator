@@ -1,39 +1,84 @@
-# Rights Navigator - India Law Edition
+# ⚖️ Rights Navigator — India Law Edition
 
-Rights Navigator is an educational and navigational instrument designed to help users evaluate statutory conditions and legal rights based on Indian laws. It provides deterministic legal matching, document checklists, and action plans.
+<p align="center">
+  <strong>Understand Your Rights. Take the Right Action.</strong>
+</p>
 
-**Live demo:** https://rights-navigator-v8pc.onrender.com/
+<p align="center">
+  An AI-assisted civic and legal navigation platform designed to help citizens understand their rights, evaluate common legal situations, organize evidence, and take practical next steps.
+</p>
 
-## Features
+<p align="center">
 
-- **Domain Specific Navigation:** Covers Consumer, Workplace, and Tenancy disputes.
-- **Statutory Matcher:** Deterministic assessment against 16 verified bare-act/rule records (Consumer, Workplace, and Tenancy — all three domains now have coverage).
-- **Plain-Language Explanation:** Optional Gemini-powered layer that phrases the server's verified matches in plain language, with citation sanitization so it can never introduce an unverified source.
-- **Case Vault:** Persistent storage for user cases (scoped by user), with save/view/delete.
-- **PDF Export:** Generate PDFs of Legal Notices or RTI applications (via `jspdf`).
-- **Document Checklist:** Domain-specific evidence checklist per case.
+  <a href="https://rights-navigator-v8pc.onrender.com/">
+    🌐 Live Demo
+  </a>
+  •
+  <a href="https://github.com/Maskman014/Rights-Navigator">
+    📦 GitHub Repository
+  </a>
 
-## Getting Started
+</p>
 
-1. **Install Dependencies:**
-   ```bash
-   npm install
-   ```
-2. **Start the Development Server:**
-   ```bash
-   npm run dev
-   ```
-3. Open `http://localhost:5173` in your browser.
+---
 
-## Tech Stack
+## 🚀 About The Project
 
-- **Frontend:** React, Vite, Tailwind CSS, Framer Motion, Lucide React, jsPDF
-- **Backend:** Express server (`server.js`), plus a set of Vercel-style serverless functions in `api/` for deployment flexibility.
-- **Database:** Supabase for authentication and user data.
-- **Legal Data:** `src/data/legalSources.json` — fact-checked records across Consumer, Workplace, and Tenancy domains (state-specific tenancy acts for MP, Delhi, Maharashtra, Karnataka, and Tamil Nadu).
+**Rights Navigator** is a Civic-Tech and Legal-Tech platform designed to make legal and civic information easier for ordinary citizens to understand and navigate.
 
-## Security
+Many people face problems related to:
 
-Authentication is handled by Supabase, with SHA-256 password hashing and token-based sessions.
+- 🛒 Consumer complaints
+- 💼 Workplace issues
+- 🏠 Tenant and rental disputes
+- 📄 Legal notices
+- 🏛️ Government procedures
+- 📋 RTI applications
+- ⚖️ Understanding basic rights
 
-> **Note:** This tool is for educational purposes and does not substitute formal legal counsel.
+However, legal information is often difficult to understand because it is spread across different documents, websites, laws, and government resources.
+
+**Rights Navigator** aims to simplify this journey by providing structured legal information, guided questions, evidence checklists, case management, and document-generation tools.
+
+---
+
+## 🎯 Problem Statement
+
+Citizens often know that something is wrong but don't know:
+
+> "What are my rights?"
+
+> "Which law applies to my situation?"
+
+> "What evidence should I collect?"
+
+> "Where should I complain?"
+
+> "What should I do next?"
+
+Rights Navigator is designed to help answer these questions through a simple, citizen-friendly interface.
+
+---
+
+## 💡 Our Solution
+
+The platform follows a simple workflow:
+
+```text
+Describe Your Problem
+        ↓
+Select Legal Domain
+        ↓
+Provide Case Details
+        ↓
+Evaluate Applicable Rules
+        ↓
+Understand Your Rights
+        ↓
+Get Evidence Checklist
+        ↓
+Explore Possible Actions
+        ↓
+Save Your Case
+        ↓
+Generate Documents
