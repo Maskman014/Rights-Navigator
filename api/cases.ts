@@ -1,6 +1,5 @@
-// Case Vault Database API — Persistent Store for Assessments & Action Plans (MongoDB Edition)
-import { connectDB } from './db';
-import { Case } from './models';
+// Case Vault Database API — Persistent Store for Assessments & Action Plans (Supabase Edition)
+import { supabase } from './db';
 
 function getUserIdFromToken(req: any) {
   const authHeader = req.headers.authorization;
@@ -30,18 +29,25 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    await connectDB();
-
     if (method === 'GET') {
-      const cases = await Case.find({ userId }).sort({ createdAt: -1 });
+      const { data: cases, error } = await supabase
+        .from('cases')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedCases = (cases || []).map((row: any) => row.case_data || row);
+
       if (queryId) {
-        const found = cases.find((c: any) => c.caseData?.id === queryId || c._id.toString() === queryId);
+        const found = formattedCases.find((c: any) => c.id === queryId);
         if (!found) {
           return res.status(404).json({ error: 'Case not found' });
         }
-        return res.status(200).json(found.caseData);
+        return res.status(200).json(found);
       }
-      return res.status(200).json(cases.map((c: any) => c.caseData));
+      return res.status(200).json(formattedCases);
     }
 
     if (method === 'POST') {
@@ -72,11 +78,17 @@ export default async function handler(req: any, res: any) {
         noticeDraft: noticeDraft || '',
       };
 
-      // Save into MongoDB
-      await Case.create({
-        userId,
-        caseData: newCaseObj,
-      });
+      // Save into Supabase 'cases' table
+      const { error } = await supabase.from('cases').insert([
+        {
+          id: caseId,
+          user_id: userId,
+          case_data: newCaseObj,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+
+      if (error) throw error;
 
       return res.status(201).json({
         success: true,
@@ -90,13 +102,17 @@ export default async function handler(req: any, res: any) {
         return res.status(400).json({ error: 'Missing case id parameter' });
       }
 
-      // Find and delete matching case where userId matches and caseData.id matches queryId
-      const deleted = await Case.findOneAndDelete({
-        userId,
-        'caseData.id': queryId,
-      });
+      // Delete from Supabase where user_id matches and id matches queryId
+      const { data: deleted, error } = await supabase
+        .from('cases')
+        .delete()
+        .eq('user_id', userId)
+        .eq('id', queryId)
+        .select();
 
-      if (!deleted) {
+      if (error) throw error;
+
+      if (!deleted || deleted.length === 0) {
         return res.status(404).json({ error: 'Case not found' });
       }
 
