@@ -11,8 +11,7 @@
 
 import type { LegalSource } from "../src/types/legal";
 
-// Updated to an active model ID
-const MODEL_ID = process.env.GEMINI_MODEL_ID || "gemini-2.5-flash";
+const MODEL_ID = process.env.GEMINI_MODEL_ID || "gemini-2.0-flash";
 
 interface CitedStatement {
   text: string;
@@ -81,6 +80,7 @@ export default async function handler(req: any, res: any) {
 
     const validIds = new Set(body.validated_sources.map((s) => s.id));
 
+    // Nothing to explain — don't call the LLM for an empty source set.
     if (validIds.size === 0) {
       res.status(200).json({
         status: body.server_computed_status,
@@ -93,6 +93,7 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
+    // Sanitize incident_summary to prevent prompt injection and token abuse
     const MAX_SUMMARY_CHARS = 2_000;
     const rawSummary = typeof body.incident_summary === "string" ? body.incident_summary : "";
     const sanitizedSummary = rawSummary
@@ -119,7 +120,7 @@ export default async function handler(req: any, res: any) {
     if (!geminiRes.ok) {
       const errText = await geminiRes.text();
       console.error("Gemini API error:", errText);
-      res.status(502).json({ error: "Upstream Gemini API call failed", details: errText });
+      res.status(502).json({ error: "Upstream Gemini API call failed" });
       return;
     }
 
@@ -134,6 +135,7 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
+    // Mandatory sanitization: server status always wins, unverified citations discarded
     const geminiClaimedDifferentStatus = parsed.status !== body.server_computed_status;
 
     const summarySan = sanitizeStatements([parsed.summary].filter(Boolean) as CitedStatement[], validIds);
