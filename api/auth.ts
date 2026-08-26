@@ -1,13 +1,13 @@
-const crypto = require('crypto');
-const supabase = require('./db');
+import crypto from 'crypto';
+import { supabase } from './db';
 
 console.log("SUPABASE AUTH API CALLED");
 
-function hashPassword(password) {
+function hashPassword(password: string): string {
   return crypto.createHash('sha256').update(password).digest('hex');
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req: any, res: any) {
   const method = req.method;
   const url = new URL(req.url || '', 'http://localhost');
   const action = url.searchParams.get('action');
@@ -67,8 +67,8 @@ module.exports = async function handler(req, res) {
     }
 
     return res.status(400).json({ error: 'Invalid action' });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Auth handler error:', err);
     return res.status(500).json({ error: err.message || 'Internal server error' });
   }
-};
+}
