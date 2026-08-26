@@ -1,7 +1,7 @@
-﻿// Phase 3 — Server Security Boundary.
+// Phase 3 — Server Security Boundary.
 import legalSources from "../src/data/legalSources.json";
 import { matchLegalSources } from "../src/utils/sourceMatcher";
-import { mapConfirmedFactsToEngine } from "../src/utils/factMapping"; // Fix #5
+import { mapConfirmedFactsToEngine } from "../src/utils/factMapping";
 import type { LegalSource, UserIncident } from "../src/types/legal";
 
 // Safe UUID generator avoiding Node 'crypto' module type dependency
@@ -13,7 +13,7 @@ function generateUUID(): string {
   return "audit-" + Math.random().toString(36).substring(2, 11) + "-" + Date.now();
 }
 
-// Fix #10 — Runtime-validated domain values (type-cast alone is insufficient)
+// Runtime-validated domain values
 const VALID_DOMAINS = new Set<string>(["consumer", "workplace", "tenant"]);
 
 export default function handler(req: any, res: any) {
@@ -32,7 +32,7 @@ export default function handler(req: any, res: any) {
       candidate_source_ids?: string[]; // UX hint only, NOT authoritative
     };
 
-    // Fix #10 — Runtime validation (TypeScript type-casts give zero runtime safety)
+    // Runtime validation
     if (!body || typeof body !== "object") {
       res.status(400).json({ error: "Request body must be a JSON object" });
       return;
@@ -61,27 +61,23 @@ export default function handler(req: any, res: any) {
       return;
     }
 
-    // Fix #5 — Map UI checkbox IDs to canonical engine fact keys.
-    // The client sends raw IDs like ["c1","c5"]; the engine expects keys like
-    // ["proof_of_purchase","issue_documented"]. factMapping.ts is the authoritative bridge.
+    // Map UI checkbox IDs to canonical engine fact keys
     const mappedFacts = mapConfirmedFactsToEngine(body.confirmed_facts);
 
     const incident: UserIncident = {
       domain: body.domain,
       dispute_type: body.dispute_type ?? "",
       jurisdiction_state: body.jurisdiction_state ?? "",
-      incident_date: body.incident_date, // Fix #8 — now { precision, value } from client
-      confirmed_facts: mappedFacts,      // canonical engine keys, not raw checkbox IDs
+      incident_date: body.incident_date,
+      confirmed_facts: mappedFacts,
     };
 
-    // Server independently loads and evaluates ALL sources.
+    // Server independently loads and evaluates ALL sources
     const allSources = legalSources as unknown as LegalSource[];
     const result = matchLegalSources(incident, allSources);
 
     const validatedSourceIds = result.matched_sources.map((s) => s.id);
 
-    // Fix #17 — Remove misleading Gemini audit fields; this endpoint never calls Gemini.
-    // Gemini audit fields are produced exclusively by /api/explain.
     const auditLog = {
       audit_id: generateUUID(),
       timestamp: new Date().toISOString(),
@@ -89,7 +85,7 @@ export default function handler(req: any, res: any) {
       client_candidate_hints: body.candidate_source_ids || [],
       validated_source_ids: validatedSourceIds,
       server_computed_status: result.status,
-      gemini_consulted: false, // deterministic-only endpoint — no LLM involved
+      gemini_consulted: false, // deterministic-only endpoint
     };
 
     res.status(200).json({
