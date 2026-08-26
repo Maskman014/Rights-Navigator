@@ -11,7 +11,7 @@
 
 import type { LegalSource } from "../src/types/legal";
 
-const MODEL_ID = process.env.GEMINI_MODEL_ID || "gemini-2.0-flash";
+const MODEL_ID = process.env.GEMINI_MODEL_ID || "gemini-2.5-flash";
 
 interface CitedStatement {
   text: string;
