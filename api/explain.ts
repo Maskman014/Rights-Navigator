@@ -9,7 +9,6 @@
 // readable from the browser. The client calls this endpoint, not Gemini
 // directly.
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
 import type { LegalSource } from "../src/types/legal";
 
 const MODEL_ID = process.env.GEMINI_MODEL_ID || "gemini-2.0-flash";
@@ -32,7 +31,6 @@ const SYSTEM_PROMPT = `You are a plain-language legal explanation engine. You DO
 
 function stripFences(text: string): string {
   let t = text.trim();
-  // Fix #20 — Strip opening fence (```json or ```) and ALL trailing fences/whitespace
   t = t.replace(/^```(?:json)?\s*/i, "");
   t = t.replace(/\s*```+\s*$/g, "");
   return t.trim();
@@ -56,7 +54,7 @@ function sanitizeStatements(
   return { kept, discarded };
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;
@@ -72,7 +70,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const body = req.body as {
       server_computed_status: "supported" | "partial" | "unavailable";
       validated_sources: LegalSource[];
-      incident_summary: string; // plain-language description of what the user described
+      incident_summary: string;
     };
 
     if (!body || !Array.isArray(body.validated_sources) || !body.server_computed_status) {
@@ -95,9 +93,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    // Fix #3 — Sanitize incident_summary to prevent prompt injection and token abuse.
-    // Cap at 2 000 chars; strip ASCII control characters (except tab/newline) that can
-    // confuse the model or act as instruction delimiters.
+    // Sanitize incident_summary to prevent prompt injection and token abuse
     const MAX_SUMMARY_CHARS = 2_000;
     const rawSummary = typeof body.incident_summary === "string" ? body.incident_summary : "";
     const sanitizedSummary = rawSummary
@@ -139,8 +135,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    // --- Mandatory sanitization: server status always wins, unverified
-    // --- citations are discarded, never silently substituted.
+    // Mandatory sanitization: server status always wins, unverified citations discarded
     const geminiClaimedDifferentStatus = parsed.status !== body.server_computed_status;
 
     const summarySan = sanitizeStatements([parsed.summary].filter(Boolean) as CitedStatement[], validIds);
@@ -155,7 +150,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       reliefSan.discarded;
 
     res.status(200).json({
-      status: body.server_computed_status, // ALWAYS server's status, never Gemini's
+      status: body.server_computed_status,
       summary: summarySan.kept[0] || { text: "", source_ids: [] },
       rights: rightsSan.kept,
       procedural_steps: stepsSan.kept,
